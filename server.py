@@ -57,7 +57,10 @@ http_msgid = {}
 def http_handle(sock, addr, recv_data):
     global console, messages, http_msgid
     path1 = recv_data.split("\r\n")[0].split(" ")[1].split("/")
-    path = urllib.parse.unquote(path1)
+    # path = urllib.parse.unquote(path1)
+    path = []
+    for i in path1:
+        path += [urllib.parse.unquote(i)]
     resp_data = "HTTP/1.1 200 OK \r\n\r\n"
     console.log(path)
     if path[1] == "getMsg":
