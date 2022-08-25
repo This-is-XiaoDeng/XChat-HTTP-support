@@ -11,7 +11,7 @@ import urllib.parse
 console = Console()
 threads = {}
 messages = [
-        {"IP":"127.0.0.1","from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-server"}
+        {"IP":"127.0.0.1","from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-http server"}
 ]
 threadList = []
 users = {}
@@ -22,8 +22,14 @@ except:
     config = {
         "eula":False,
         "port":False,
-        "asp":True
+        "asp":True,
+        "max_resp_msg":15
     }
+
+try:
+    a = config["max_resp_msg"]
+except:
+    config["max_resp_msg"] = 15
 
 if config["eula"] == False:
     if console.input(
@@ -89,10 +95,13 @@ def http_handle(sock, addr, recv_data):
     return True
 
 def handle(sock, addr):
-    global console, messages, threads, threadList, users
+    global console, messages, threads, threadList, users, config
     msgid = 0
     username = ""
-    version = "xchat-v1"
+    version = "xchat-v1 unkown"
+
+    if config["max_resp_msg"] <= messages.__len__():
+        msgid = messages.__len__() - config["max_resp_msg"]
 
     while True:
         resp_data = {
