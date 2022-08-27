@@ -114,7 +114,7 @@ def handle(sock, addr):
                     except: passwd = None
                 else:
                     passwd = None
-                console.log(passwd,config["server"]["msg"])
+                # console.log(passwd,config["server"]["msg"])
                 if passwd == config["server"]["passwd"]:
                     username = recv_data["data"]["username"]
                     users[addr[1]] = username
