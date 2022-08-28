@@ -72,6 +72,7 @@ def handle(sock, addr):
                 recv_data = json.loads(recv_data)
             except:
                 httpclient.http_handle(sock, addr, recv_data, messages)
+                return 0
 
             if username != "":
                 if recv_data["mode"] == "getMsg":
