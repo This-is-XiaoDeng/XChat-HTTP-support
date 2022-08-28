@@ -15,7 +15,7 @@ def http_handle(sock, addr, recv_data, messages):
         path += [urllib.parse.unquote(i)]
     resp_data = "HTTP/1.1 200 OK \r\n\r\n"
     console.log(path)
-    if path[1] == "getMsg":
+    if path[0] == "getMSg" or path[1] == "getMsg":
         try:
             console.log(http_msgid[addr[0]])
         except:
