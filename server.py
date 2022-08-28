@@ -1,10 +1,10 @@
 from rich.console import Console
 import socket
+import httpclient
 import json
 import threading
 import time
 import atexit
-import httpclient
 import sys
 import os
 import initcfg
@@ -12,7 +12,7 @@ import initcfg
 console = Console()
 threads = {}
 messages = [
-        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-v3 server","IP":"127.0.0.1"}
+        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-v3 server"}
 ]
 threadList = []
 users = {}
@@ -49,7 +49,7 @@ def handle(sock, addr):
     username = ""
     version = "xchat-v1 unkown"
 
-    if config["max_resp_msg"] <= messages.__len__():
+    if config["max_resp_msg"] <= messages.__len__() - msgid:
         msgid = messages.__len__() - config["max_resp_msg"]
 
     while True:
@@ -67,18 +67,17 @@ def handle(sock, addr):
                 recv_data = recv_data.decode("utf-8")
             except:
                 recv_data = recv_data.decode("gbk")
+            
+            if recv_data[0:3] == "GET":
+                return httpclient.http_handle(sock, addr, recv_data, messages)
 
-            try:
-                recv_data = json.loads(recv_data)
-            except:
-                httpclient.http_handle(sock, addr, recv_data, messages)
-                return 0
-
+            recv_data = json.loads(recv_data)
+            
             if username != "":
                 if recv_data["mode"] == "getMsg":
                     try:
                         # 限制返回数据量
-                        if config["max_resp_msg"] <= messages.__len__():
+                        if config["max_resp_msg"] <= messages.__len__() - msgid:
                             msgid = messages.__len__() - config["max_resp_msg"]
                             
                         resp_data["data"]["messages"] = messages[msgid:]
